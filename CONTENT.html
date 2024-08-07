@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future Seeds Academy</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f8f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #ff5e99, #6e40c9 , #750164 , #2f29e0);
+            background-size: 200% 200%;
+            animation: gradientMove 10s ease infinite;
+        }
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% 0%;
+            }
+            50% {
+                background-position: 100% 100%;
+            }
+            100% {
+                background-position: 0% 0%;
+            }
+        }
+        .container {
+            display: flex;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            max-width: 900px;
+            width: 100%;
+        }
+        .left-panel, .right-panel {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            width: 50%;
+        }
+        .left-panel {
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+        }
+        .right-panel {
+            background-color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .right-panel img {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            margin-top: 0;
+        }
+        .header img {
+            width: 100px;
+            margin-right: 10px;
+        }
+        h2 {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        h2 span {
+            color: #a64ac9;
+        }
+        h2 span.highlight {
+            background-color: #ffffff;
+            padding: 0 5px;
+            border-radius: 5px;
+        }
+        p {
+            font-size: 1.5em;
+            color: #333;
+            margin: 20px 0;
+            line-height: 1.5;
+            text-align: center;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+        p::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 105, 180, 0.4), rgba(105, 180, 255, 0.4));
+            z-index: -1;
+            transform: skewY(-5deg);
+        }
+        p span.highlight {
+            color: #a64ac9;
+            font-weight: bold;
+            background: -webkit-linear-gradient(45deg, #ff5e99, #6e40c9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            display: inline;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: auto; /* Pushes buttons to the bottom of the left panel */
+        }
+        .button {
+            padding: 10px 20px;
+            background-color: #ff5e99;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .button:hover {
+            background-color: #e04e82;
+            transform: scale(1.05);
+        }
+        .button.student-works {
+            background-color: #6e40c9;
+        }
+        .button.go-meeting {
+            background-color: #406ec9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <div class="header">
+                <img src="Artbrd 1.png" alt="Future Seeds Academy Logo">
+                <h2>Future Seeds Academy</h2>
+            </div>
+            <br>
+            <br>
+            <br>
+            <p>Explore Your <span class="highlight">Programming</span> Skills With Us</p>
+            <div class="buttons">
+                <a href="https://drive.google.com/drive/folders/18hxUlBssTp_nWrkPdFdXLfz5JTEoMGCw?usp=drive_link" class="button course-content">Course Content</a>
+                <a href="#" id="student-works-button" class="button student-works">Student Works</a>
+                <a href="#" id="meeting-button" class="button go-meeting">Go Meeting</a>
+            </div>
+        </div>
+        <div class="right-panel">
+            <img src="Captureee.PNG" alt="Student">
+        </div>
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+    const studentId = prompt("Enter your Student ID:"); // This is an area to consider improving
+    if (studentId) {
+        const driveLinkKey = `driveLink_${studentId}`;
+        const driveLink = localStorage.getItem(driveLinkKey);
+        const studentWorksButton = document.getElementById('student-works-button');
+
+        if (driveLink) {
+            studentWorksButton.href = driveLink;
+        } else {
+            studentWorksButton.href = '#';
+            studentWorksButton.textContent = 'Link Not Set';
+            studentWorksButton.style.backgroundColor = 'gray';
+        }
+
+        const meetingLink = localStorage.getItem('meetingLink');
+        const meetingButton = document.getElementById('meeting-button');
+        if (meetingLink) {
+            meetingButton.href = meetingLink;
+        } else {
+            meetingButton.href = '#';
+            meetingButton.textContent = 'Link Not Set';
+            meetingButton.style.backgroundColor = 'gray';
+        }
+    }
+});
+
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #ff5e99, #6e40c9, #750164, #2f29e0);
+            background-size: 200% 200%;
+            animation: gradientMove 10s ease infinite;
+        }
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% 0%;
+            }
+            50% {
+                background-position: 100% 100%;
+            }
+            100% {
+                background-position: 0% 0%;
+            }
+        }
+        .container {
+            background-color: white;
+            padding: 20px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        label, input, button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .id-list, .link-section {
+            margin-top: 20px;
+        }
+        .id-item {
+            padding: 10px;
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .id-item button {
+            background-color: #dc3545;
+            margin-left: 10px;
+        }
+        .drive-link-input {
+            margin-top: 10px;
+            padding: 5px;
+            width: calc(100% - 120px);
+            display: inline-block;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .pagination button {
+            margin: 0 5px;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .pagination button:hover {
+            background-color: #0056b3;
+        }
+        .pagination button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Admin Panel</h2>
+        <label for="idInput">Add New ID:</label>
+        <input type="text" id="idInput" placeholder="Enter new ID">
+        <button onclick="addID()">Add ID</button>
+        <div class="id-list" id="idList"></div>
+        <div class="pagination" id="paginationControls"></div>
+        <div class="link-section">
+            <h3>Current Meeting Link:</h3>
+            <p id="currentLink">No link set</p>
+            <label for="meetingLinkInput">Update Meeting Link:</label>
+            <input type="text" id="meetingLinkInput" placeholder="Enter new meeting link">
+            <button onclick="updateMeetingLink()">Update Link</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem("adminLoggedIn") !== "true") {
+                window.location.href = "admin_login.html"; // Redirect to login if not logged in
+            }
+
+            const idListElement = document.getElementById('idList');
+            const idInputElement = document.getElementById('idInput');
+            const meetingLinkInputElement = document.getElementById('meetingLinkInput');
+            const currentLinkElement = document.getElementById('currentLink');
+            const paginationControls = document.getElementById('paginationControls');
+            const itemsPerPage = 10;
+            let currentPage = 1;
+
+            function getValidIDs() {
+                const ids = localStorage.getItem('validIDs');
+                return ids ? JSON.parse(ids) : [];
+            }
+
+            function saveValidIDs(ids) {
+                localStorage.setItem('validIDs', JSON.stringify(ids));
+            }
+
+            function getMeetingLink() {
+                return localStorage.getItem('meetingLink') || 'No link set';
+            }
+
+            function saveMeetingLink(link) {
+                localStorage.setItem('meetingLink', link);
+            }
+
+            function getDriveLink(id) {
+                return localStorage.getItem(`driveLink_${id}`) || '';
+            }
+
+            function saveDriveLink(id, link) {
+                localStorage.setItem(`driveLink_${id}`, link);
+            }
+
+            function renderIDList() {
+                const validIDs = getValidIDs();
+                const start = (currentPage - 1) * itemsPerPage;
+                const end = start + itemsPerPage;
+                const idsToDisplay = validIDs.slice(start, end);
+
+                idListElement.innerHTML = '';
+                idsToDisplay.forEach(id => {
+                    const div = document.createElement('div');
+                    div.className = 'id-item';
+                    div.innerHTML = `
+                        <span>${id}</span>
+                        <input type="text" class="drive-link-input" id="driveLink_${id}" placeholder="Enter Google Drive link" value="${getDriveLink(id)}">
+                        <button onclick="saveDriveLinkForID('${id}')">Save Link</button>
+                        <button onclick="removeID('${id}')">Remove</button>
+                    `;
+                    idListElement.appendChild(div);
+                });
+
+                renderPaginationControls(validIDs.length);
+            }
+
+            function renderPaginationControls(totalItems) {
+                const totalPages = Math.ceil(totalItems / itemsPerPage);
+                paginationControls.innerHTML = '';
+
+                for (let i = 1; i <= totalPages; i++) {
+                    const button = document.createElement('button');
+                    button.textContent = i;
+                    button.disabled = i === currentPage;
+                    button.onclick = () => {
+                        currentPage = i;
+                        renderIDList();
+                    };
+                    paginationControls.appendChild(button);
+                }
+            }
+
+            function renderCurrentLink() {
+                currentLinkElement.textContent = getMeetingLink();
+            }
+
+            window.addID = () => {
+                const newID = idInputElement.value.trim();
+                if (newID) {
+                    const validIDs = getValidIDs();
+                    if (!validIDs.includes(newID)) {
+                        validIDs.push(newID);
+                        saveValidIDs(validIDs);
+                        renderIDList();
+                        idInputElement.value = '';
+                    } else {
+                        alert('ID already exists!');
+                    }
+                }
+            };
+
+            window.removeID = (id) => {
+                let validIDs = getValidIDs();
+                validIDs = validIDs.filter(validID => validID !== id);
+                localStorage.removeItem(`driveLink_${id}`);
+                saveValidIDs(validIDs);
+                renderIDList();
+            };
+
+            window.saveDriveLinkForID = (id) => {
+                const link = document.getElementById(`driveLink_${id}`).value.trim();
+                if (link) {
+                    saveDriveLink(id, link);
+                    alert('Link saved successfully!');
+                } else {
+                    alert('Please enter a valid link.');
+                }
+            };
+
+            window.updateMeetingLink = () => {
+                const newLink = meetingLinkInputElement.value.trim();
+                if (newLink) {
+                    saveMeetingLink(newLink);
+                    renderCurrentLink();
+                    meetingLinkInputElement.value = '';
+                }
+            };
+
+            renderIDList();
+            renderCurrentLink();
+        });
+    </script>
+</body>
+</html>

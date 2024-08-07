@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Role Selector</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            position: relative; 
+            overflow: hidden; /* To prevent scrollbars from appearing if GIF is larger */
+            
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('1d72a2ecc5710dcabf7c0e95e3bccb16.gif');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            z-index: -1; /* Ensures the GIF is behind the content */
+        }
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(248, 248, 248, 0.3) 0%, rgba(224, 224, 224, 0.3) 100%);
+            z-index: -1; /* Ensures the gradient is on top of the GIF */
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+        h1 {
+            color: #333;
+            font-size: 2.4em;
+            margin-bottom: 30px;
+            font-weight: 700;
+            background: -webkit-linear-gradient(45deg, #ff5e99, #6e40c9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        button {
+            background-color: #ff5e99;
+            border: none;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        button:hover {
+            background-color: #e04e82;
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+        .admin-button {
+            background-color: #6e40c9;
+        }
+        .admin-button:hover {
+            background-color: #5a2d9c;
+        }
+    </style>
+    <script>
+        function redirectToPage(role) {
+            if (role === 'admin') {
+                window.location.href = 'Admin Login.html'; // Replace with the actual admin page URL
+            } else {
+                window.location.href = 'withadmin.html'; // Replace with the actual user page URL
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Select Your Role</h1>
+        <div class="button-group">
+            <button class="admin-button" onclick="redirectToPage('admin')">Admin</button>
+            <button onclick="redirectToPage('user')">Student</button>
+        </div>
+    </div>
+</body>
+</html>
